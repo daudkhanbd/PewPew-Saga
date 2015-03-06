@@ -6,14 +6,14 @@ import android.view.SurfaceHolder;
 /**
  * Created by George Netu on 06.03.2015.
  */
-public class MainThread extends Thread {
 
-    private int fps = 30;
+public class MainThread extends Thread {
+    private int FPS = 30;
     private double averageFPS;
     private SurfaceHolder surfaceHolder;
     private GamePanel gamePanel;
     private boolean running;
-    private static Canvas canvas;
+    public static Canvas canvas;
 
     public MainThread(SurfaceHolder surfaceHolder, GamePanel gamePanel) {
         super();
@@ -27,8 +27,8 @@ public class MainThread extends Thread {
         long timeMillis;
         long waitTime;
         long totalTime = 0;
-        long frameCount = 0;
-        long targetTime = 1000 / fps;
+        int frameCount = 0;
+        long targetTime = 1000 / FPS;
 
         while (running) {
             startTime = System.nanoTime();
@@ -42,8 +42,18 @@ public class MainThread extends Thread {
                     this.gamePanel.draw(canvas);
                 }
             } catch (Exception e) {
+            } finally {
+                if (canvas != null) {
+                    try {
+                        surfaceHolder.unlockCanvasAndPost(canvas);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-            timeMillis = System.nanoTime() - startTime / 1000000;
+
+
+            timeMillis = (System.nanoTime() - startTime) / 1000000;
             waitTime = targetTime - timeMillis;
 
             try {
@@ -51,9 +61,9 @@ public class MainThread extends Thread {
             } catch (Exception e) {
             }
 
-            totalTime = System.nanoTime() - startTime;
+            totalTime += System.nanoTime() - startTime;
             frameCount++;
-            if (frameCount == fps) {
+            if (frameCount == FPS) {
                 averageFPS = 1000 / ((totalTime / frameCount) / 1000000);
                 frameCount = 0;
                 totalTime = 0;
@@ -61,6 +71,7 @@ public class MainThread extends Thread {
             }
         }
     }
+
     public void setRunning(boolean b) {
         running = b;
     }
