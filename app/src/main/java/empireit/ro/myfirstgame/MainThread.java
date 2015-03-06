@@ -3,10 +3,6 @@ package empireit.ro.myfirstgame;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
-/**
- * Created by George Netu on 06.03.2015.
- */
-
 public class MainThread extends Thread {
     private int FPS = 30;
     private double averageFPS;
